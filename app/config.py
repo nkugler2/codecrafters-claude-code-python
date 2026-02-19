@@ -66,6 +66,9 @@ def get_client_config() -> ProviderConfig:
             raise RuntimeError(
                 f"Provider {ACTIVE_PROVIDER!r} requires OPENROUTER_API_KEY but it is not set. Check ai.env."
             )
+        # Respect OPENROUTER_BASE_URL if the environment provides one
+        # (CodeCrafters injects this; the original code also read it).
+        base_url = os.environ.get("OPENROUTER_BASE_URL", config.base_url).strip()
         import dataclasses
-        config = dataclasses.replace(config, api_key=api_key)
+        config = dataclasses.replace(config, api_key=api_key, base_url=base_url)
     return config
