@@ -27,7 +27,8 @@ def main():
     while True:
         # This is the response message
         chat = client.chat.completions.create(
-            model="openrouter/aurora-alpha",
+            model="anthropic/claude-haiku-4.5",
+            ##model="openrouter/aurora-alpha",
             messages=messages,
             tools=[
                 {
