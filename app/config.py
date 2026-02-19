@@ -34,13 +34,13 @@ _PROVIDERS: dict[str, ProviderConfig] = {
     "haiku": ProviderConfig(
         model="anthropic/claude-haiku-4.5",
         base_url="https://openrouter.ai/api/v1",
-        api_key=os.environ.get("OPENROUTER_API_KEY", ""),
+        api_key="",              # resolved at call time in get_client_config()
         requires_real_key=True,
     ),
     "openrouter": ProviderConfig(
         model="openrouter/aurora-alpha",
         base_url="https://openrouter.ai/api/v1",
-        api_key=os.environ.get("OPENROUTER_API_KEY", ""),
+        api_key="",              # resolved at call time in get_client_config()
         requires_real_key=True,
     ),
     "ollama": ProviderConfig(
@@ -58,8 +58,14 @@ def get_client_config() -> ProviderConfig:
             f"Unknown provider {ACTIVE_PROVIDER!r}. Choose from: {list(_PROVIDERS)}"
         )
     config = _PROVIDERS[ACTIVE_PROVIDER]
-    if config.requires_real_key and not config.api_key:
-        raise RuntimeError(
-            f"Provider {ACTIVE_PROVIDER!r} requires OPENROUTER_API_KEY but it is not set. Check ai.env."
-        )
+    if config.requires_real_key:
+        # Read from environment at call time so the value is always current.
+        # _load_env_file() already ran at import time and populated os.environ.
+        api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+        if not api_key:
+            raise RuntimeError(
+                f"Provider {ACTIVE_PROVIDER!r} requires OPENROUTER_API_KEY but it is not set. Check ai.env."
+            )
+        import dataclasses
+        config = dataclasses.replace(config, api_key=api_key)
     return config

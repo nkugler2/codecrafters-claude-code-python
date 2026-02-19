@@ -11,7 +11,11 @@ def main():
     args = p.parse_args()
 
     provider = get_client_config()
-    client = OpenAI(api_key=provider.api_key, base_url=provider.base_url)
+    client = OpenAI(
+        api_key=provider.api_key,
+        base_url=provider.base_url,
+        default_headers={"Authorization": f"Bearer {provider.api_key}"},
+    )
 
     # Users inital message
     messages = [{"role": "user", "content": args.p}]
