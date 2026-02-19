@@ -46,9 +46,6 @@ def main():
         ],
     )
 
-    if not chat.choices or len(chat.choices) == 0:
-        raise RuntimeError("no choices in response")
-
     # if the first message has tool calls
     if chat.choices[0].message.tool_calls:
         # check each of the tool calls
@@ -67,19 +64,6 @@ def main():
     else:
         # print null if not used
         print(chat.choices[0].message.content)
-
-    # # Grab the first message
-    # first_message = chat.choices[0].message
-    #
-    # # Grab the first tool call
-    # if first_message.tool_calls and len(first_message.tool_calls) > 0:
-    #     first_tool_call = first_message.tool_calls[0]
-    #     parsed_function_name = first_tool_call.function.name
-    #     parsed_arguments = json.loads(first_tool_call.function.arguments)
-    #
-    # def Read_tool(file_path):
-    #     print(open(file_path))
-
 
 
     if not chat.choices or len(chat.choices) == 0:
