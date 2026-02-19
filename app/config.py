@@ -38,13 +38,13 @@ _PROVIDERS: dict[str, ProviderConfig] = {
         requires_real_key=True,
     ),
     "openrouter": ProviderConfig(
-        model="openrouter/aurora-alpha",
+        model="stepfun/step-3.5-flash:free",
         base_url="https://openrouter.ai/api/v1",
         api_key="",              # resolved at call time in get_client_config()
         requires_real_key=True,
     ),
     "ollama": ProviderConfig(
-        model="qwen2.5-coder14:b-fullContext",
+        model="granite4:3b",
         base_url="http://localhost:11434/v1",
         api_key="ollama",        # placeholder — Ollama doesn't validate this
         requires_real_key=False,

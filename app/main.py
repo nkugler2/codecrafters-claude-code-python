@@ -1,8 +1,9 @@
 import argparse
+import subprocess
 import sys
 import json
 from openai import OpenAI
-from app.config import get_client_config
+from app.config import ACTIVE_PROVIDER, get_client_config
 
 # The request body
 def main():
@@ -61,11 +62,31 @@ def main():
                         },
                     },
                 },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "Bash",
+                        "description": "Execute a shell command",
+                        "parameters": {
+                            "type": "object",
+                            "required": ["command"],
+                            "properties": {
+                                "command": {
+                                    "type": "string",
+                                    "description": "The command to execute",
+                                }
+                            },
+                        },
+                    },
+                },
             ],
         )
 
+        if not chat.choices:
+             print("Error: No choices returned from the API.", file=sys.stderr)
+             break
         # Append the message object after the api call
-        messages.append(chat.choices[0].message)
+        messages.append(chat.choices[0].message) # Append the message object after the api call
 
         # if there are any tool calls
         if chat.choices[0].message.tool_calls:
@@ -101,6 +122,42 @@ def main():
                         "content": content,
                     }
                     messages.append(Write_tool_response)
+                elif tool_call.function.name == "Bash":
+                    # grab function arguments
+                    func_args = json.loads(tool_call.function.arguments)
+                    # grab the command
+                    command = func_args["command"]
+                    content = subprocess.run(command, capture_ouputput=True)
+                    if content.stderr:
+                        Bash_tool_response = {
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "command": content.stderr,
+                        }
+                        messages.append("Bash_tool_response")
+                    elif content.stdout:
+                        Bash_tool_response = {
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "command": content.stdout,
+                        }
+                    else:
+                        Bash_tool_response = {
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "command": "",
+                        }
+                        messages.append("Bash_tool_response")
+
+
+                if ACTIVE_PROVIDER in ("ollama", "openrouter"):
+                    print(
+                        "-" * 30,
+                        f"Tool Call Used: {tool_call.function.name}",
+                        tool_call.function.arguments,
+                        "-" * 30,
+                        sep="\n",
+                    )
         else:
             # print null if not used
             print(chat.choices[0].message.content)
