@@ -44,7 +44,7 @@ _PROVIDERS: dict[str, ProviderConfig] = {
         requires_real_key=True,
     ),
     "ollama": ProviderConfig(
-        model="llama3.2",
+        model="qwen2.5-coder14:b-fullContext",
         base_url="http://localhost:11434/v1",
         api_key="ollama",        # placeholder — Ollama doesn't validate this
         requires_real_key=False,

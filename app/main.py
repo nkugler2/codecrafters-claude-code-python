@@ -2,7 +2,7 @@ import argparse
 import sys
 import json
 from openai import OpenAI
-from app.config import get_client_config
+from config import get_client_config
 
 # The request body
 def main():
@@ -66,6 +66,18 @@ def main():
                     messages.append(Read_tool_response)
 
                 ########## Add more tool calls here ###############
+                elif tool_call.function.name == "Write":
+                    # grab function arguments
+                    func_args = json.loads(tool_call.function.arguments)
+                    file_path = func_args["file_path"]
+                    content = func_args["content"]
+                    with open(file_path, "w") as f:
+                        f.write(content)
+                    Write_tool_response = {"role":"tool",
+                                           "tool_call_id": tool_call.id,
+                                           "content":content,
+                                           }
+                    messages.append(Write_tool_response)
 
             print(f"Tool Call Used: {tool_call}")
         else:
