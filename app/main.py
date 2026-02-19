@@ -101,8 +101,6 @@ def main():
                         "content": content,
                     }
                     messages.append(Write_tool_response)
-
-            print(f"Tool Call Used: {tool_call}")
         else:
             # print null if not used
             print(chat.choices[0].message.content)
