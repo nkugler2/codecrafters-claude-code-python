@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import json
 
 from openai import OpenAI
 
@@ -19,6 +20,7 @@ def main():
 
     client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
 
+    # This is the response message
     chat = client.chat.completions.create(
         model="anthropic/claude-haiku-4.5",
         messages=[{"role": "user", "content": args.p}],
@@ -47,12 +49,47 @@ def main():
     if not chat.choices or len(chat.choices) == 0:
         raise RuntimeError("no choices in response")
 
+    # if the first message has tool calls
+    if chat.choices[0].message.tool_calls:
+        # check each of the tool calls
+        for tool_call in chat.choices[0].message.tool_calls:
+            # if the tool call is Read
+            if tool_call.function.name == "Read":
+                # variable for for the function arguments
+                func_args = json.loads(tool_call.function.arguments)
+                # grab the file path
+                file_path = func_args["file_path"]
+                # with the file path in read mode as f
+                with open(file_path, "r") as f:
+                    content = f.read()
+                # print the stdout
+                print(content)
+    else:
+        # print null if not used
+        print(chat.choices[0].message.content)
+
+    # # Grab the first message
+    # first_message = chat.choices[0].message
+    #
+    # # Grab the first tool call
+    # if first_message.tool_calls and len(first_message.tool_calls) > 0:
+    #     first_tool_call = first_message.tool_calls[0]
+    #     parsed_function_name = first_tool_call.function.name
+    #     parsed_arguments = json.loads(first_tool_call.function.arguments)
+    #
+    # def Read_tool(file_path):
+    #     print(open(file_path))
+
+
+
+    if not chat.choices or len(chat.choices) == 0:
+        raise RuntimeError("no choices in response")
+
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!", file=sys.stderr)
 
     # TODO: Uncomment the following line to pass the first stage
     print(chat.choices[0].message.content)
-
 
 if __name__ == "__main__":
     main()
