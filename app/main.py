@@ -39,7 +39,28 @@ def main():
                             "required": ["file_path"],
                         },
                     },
-                }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "Write",
+                        "description": "Write content to a file",
+                        "parameters": {
+                            "type": "object",
+                            "required": ["file_path", "content"],
+                            "properties": {
+                                "file_path": {
+                                    "type": "string",
+                                    "description": "The path of the file to write to",
+                                },
+                                "content": {
+                                    "type": "string",
+                                    "description": "The content to write to the file",
+                                },
+                            },
+                        },
+                    },
+                },
             ],
         )
 
@@ -59,10 +80,11 @@ def main():
                     with open(file_path, "r") as f:
                         content = f.read()
                     # make the object the api needs
-                    Read_tool_response = {"role": "tool",
-                                           "tool_call_id": tool_call.id,
-                                           "content": content,
-                                          }
+                    Read_tool_response = {
+                        "role": "tool",
+                        "tool_call_id": tool_call.id,
+                        "content": content,
+                    }
                     messages.append(Read_tool_response)
 
                 ########## Add more tool calls here ###############
@@ -73,10 +95,11 @@ def main():
                     content = func_args["content"]
                     with open(file_path, "w") as f:
                         f.write(content)
-                    Write_tool_response = {"role":"tool",
-                                           "tool_call_id": tool_call.id,
-                                           "content":content,
-                                           }
+                    Write_tool_response = {
+                        "role": "tool",
+                        "tool_call_id": tool_call.id,
+                        "content": content,
+                    }
                     messages.append(Write_tool_response)
 
             print(f"Tool Call Used: {tool_call}")
@@ -87,6 +110,7 @@ def main():
 
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!", file=sys.stderr)
+
 
 if __name__ == "__main__":
     main()
