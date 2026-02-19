@@ -2,7 +2,7 @@ import argparse
 import sys
 import json
 from openai import OpenAI
-from config import get_client_config
+from app.config import get_client_config
 
 # The request body
 def main():
