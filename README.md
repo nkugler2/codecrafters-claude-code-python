@@ -1,6 +1,6 @@
 # README.me
 
-There are two parts to this README. The first part is the README made by CodeCrafters when I started the project. The second part is my README made using this project! (only difference in first part is markdown header level)
+There are two parts to this README. The first part is the README made by CodeCrafters when I started the project. The second part is my README made using this project! (only difference in first part is markdown header level) I completed this challenge when it was in the early access stage.
 
 ## README.md pre Finishing the project
 [![progress-banner](https://backend.codecrafters.io/progress/claude-code/369a33e4-c873-4a23-83de-ec4a91fb56b7)](https://app.codecrafters.io/users/nkugler2?r=2qF)
