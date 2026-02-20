@@ -127,7 +127,7 @@ def main():
                     func_args = json.loads(tool_call.function.arguments)
                     # grab the command
                     command = func_args["command"]
-                    content = subprocess.run(command, shell=True, capture_ouptput=True, text=True)
+                    content = subprocess.run(command, shell=True, capture_output=True, text=True)
                     if content.stderr:
                         Bash_tool_response = {
                             "role": "tool",
