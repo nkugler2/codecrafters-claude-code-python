@@ -82,11 +82,12 @@ def main():
             ],
         )
 
+        # Check if there was no tool calls
         if not chat.choices:
              print("Error: No choices returned from the API.", file=sys.stderr)
              break
         # Append the message object after the api call
-        messages.append(chat.choices[0].message) # Append the message object after the api call
+        messages.append(chat.choices[0].message)
 
         # if there are any tool calls
         if chat.choices[0].message.tool_calls:
@@ -113,6 +114,8 @@ def main():
                     # grab function arguments
                     func_args = json.loads(tool_call.function.arguments)
                     file_path = func_args["file_path"]
+                    # grab the content to write to file_path
+                    # with the path in write mode as f:
                     content = func_args["content"]
                     with open(file_path, "w") as f:
                         f.write(content)
@@ -127,7 +130,13 @@ def main():
                     func_args = json.loads(tool_call.function.arguments)
                     # grab the command
                     command = func_args["command"]
+                    # subprocess run to execute the command
+                    # capture stdout and stderr with text true and capture_output
+                    # shell = True to allow subprocesses to spawn new processes for the execution of the command
+                    # content is a dictionary that holds the error or output from the command.
                     content = subprocess.run(command, shell=True, capture_output=True, text=True)
+                    # pass the stderr, the stdout, or an empty string
+                    # depending on what the content object gets
                     if content.stderr:
                         Bash_tool_response = {
                             "role": "tool",

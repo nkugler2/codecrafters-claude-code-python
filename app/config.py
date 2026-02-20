@@ -6,7 +6,7 @@ from dataclasses import dataclass
 # Change this one variable to switch providers.
 # Options: "haiku" | "openrouter" | "ollama"
 # DEFAULT IS "haiku" — CodeCrafters submissions always use haiku.
-ACTIVE_PROVIDER = "haiku"
+ACTIVE_PROVIDER = "openrouter"
 
 # ── Load ai.env without third-party dependencies ─────────────────────────────
 def _load_env_file() -> None:
