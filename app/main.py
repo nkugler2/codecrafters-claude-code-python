@@ -127,27 +127,28 @@ def main():
                     func_args = json.loads(tool_call.function.arguments)
                     # grab the command
                     command = func_args["command"]
-                    content = subprocess.run(command, capture_ouputput=True)
+                    content = subprocess.run(command, shell=True, capture_ouptput=True, text=True)
                     if content.stderr:
                         Bash_tool_response = {
                             "role": "tool",
                             "tool_call_id": tool_call.id,
-                            "command": content.stderr,
+                            "content": content.stderr,
                         }
-                        messages.append("Bash_tool_response")
+                        messages.append(Bash_tool_response)
                     elif content.stdout:
                         Bash_tool_response = {
                             "role": "tool",
                             "tool_call_id": tool_call.id,
-                            "command": content.stdout,
+                            "content": content.stdout,
                         }
+                        messages.append(Bash_tool_response)
                     else:
                         Bash_tool_response = {
                             "role": "tool",
                             "tool_call_id": tool_call.id,
-                            "command": "",
+                            "content": "",
                         }
-                        messages.append("Bash_tool_response")
+                        messages.append(Bash_tool_response)
 
 
                 if ACTIVE_PROVIDER in ("ollama", "openrouter"):
